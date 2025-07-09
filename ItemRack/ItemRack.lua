@@ -183,8 +183,7 @@ ItemRack.SlotInfo = {
 	[15] = { name="BackSlot", real="Cloak", INVTYPE_CLOAK=1 },
 	[16] = { name="MainHandSlot", real="Main hand", INVTYPE_WEAPONMAINHAND=1, INVTYPE_2HWEAPON=1, INVTYPE_WEAPON=1, other=17},
 	[17] = { name="SecondaryHandSlot", real="Off hand", INVTYPE_WEAPON=1, INVTYPE_WEAPONOFFHAND=1, INVTYPE_SHIELD=1, INVTYPE_HOLDABLE=1, other=16},
-	[18] = { name="RangedSlot", real="Ranged", INVTYPE_RANGED=1, INVTYPE_RANGEDRIGHT=1, INVTYPE_THROWN=1, INVTYPE_RELIC=1},
-	[19] = { name="TabardSlot", real="Tabard", INVTYPE_TABARD=1 },
+	[18] = { name="TabardSlot", real="Tabard", INVTYPE_TABARD=1 },
 }
 
 ItemRack.DockInfo = {  -- docking-dependent values
@@ -382,7 +381,7 @@ function ItemRack.OnUnitInventoryChanged(self,event,unit)
 			ItemRack.BuildMenu()
 		end
 		if ItemRackOptFrame and ItemRackOptFrame:IsVisible() then
-			for i=0,19 do
+			for i=0,18 do
 				if not ItemRackOpt.Inv[i].selected then
 					ItemRackOpt.Inv[i].id = ItemRack.GetID(i)
 				end
@@ -633,12 +632,12 @@ function ItemRack.UpdateCurrentSet()
 	if setname and setname ~= _G.CUSTOM then
 		local equipped = ItemRack.IsSetEquipped(setname)
 		if equipped then
-			texture = ItemRack.GetTextureBySlot(20)
+			texture = ItemRack.GetTextureBySlot(19)
 		else
 			setname = _G.CUSTOM
 		end
 	end
-	if ItemRackButton20 and ItemRackUser.Buttons[20] then
+	if ItemRackButton20 and ItemRackUser.Buttons[19] then
 		ItemRackButton20Icon:SetTexture(texture)
 		ItemRackButton20Name:SetText(setname)
 	end
@@ -649,7 +648,7 @@ end
 --[[ Item info gathering ]]
 
 function ItemRack.GetTextureBySlot(slot)
-	if slot==20 then
+	if slot==19 then
 		if ItemRackUser.CurrentSet and ItemRackUser.Sets[ItemRackUser.CurrentSet] then
 			return ItemRackUser.Sets[ItemRackUser.CurrentSet].icon
 		else
@@ -783,7 +782,7 @@ function ItemRack.FindItem(id,lock)
 		end
 	end
 	-- search worn equipment
-	for i=0,19 do
+	for i=0,18 do
 		if id==getid(i) and (not lock or not locklist[-2][i]) then
 			if lock then locklist[-2][i]=1 end
 			return i
@@ -799,7 +798,7 @@ function ItemRack.FindItem(id,lock)
 		end
 	end
 	-- search worn equipment for base id matches
-	for i=0,19 do
+	for i=0,18 do
 		if sameid(id,getid(i)) and (not lock or not locklist[-2][i]) then
 			if lock then locklist[-2][i]=1 end
 			return i
@@ -966,7 +965,7 @@ function ItemRack.PopulateKnownItems()
 	end
 	local id
 	local getid = ItemRack.GetID
-	for i=0,19 do
+	for i=0,18 do
 		id = getid(i) --grab ItemRack-style ID for every currently worn equipment piece
 		if id~=0 then
 			known[id] = i*-1 --we were able to generate a valid ID for this item, so store its location (slot)
@@ -1093,7 +1092,7 @@ function ItemRack.AddToMenu(itemID)
 end
 
 -- builds a popout menu for slots or set button
--- id = 0-19 for inventory slots, or 20 for set, or nil for last defined slot/set menu (ItemRack.menuOpen)
+-- id = 0-18 for inventory slots, or 19 for set, or nil for last defined slot/set menu (ItemRack.menuOpen)
 -- before calling ItemRack.BuildMenu, you should call ItemRack.DockWindows
 -- if menuInclude, then also include the worn item(s) in the menu
 function ItemRack.BuildMenu(id,menuInclude,masqueGroup)
@@ -1113,7 +1112,7 @@ function ItemRack.BuildMenu(id,menuInclude,masqueGroup)
 
 	local itemLink,itemID,itemName,equipSlot,itemTexture
 
-	if id<20 then
+	if id<19 then
 		if menuInclude then
 			itemID = ItemRack.GetID(id)
 			if itemID~=0 then
@@ -1259,7 +1258,7 @@ function ItemRack.BuildMenu(id,menuInclude,masqueGroup)
 		for i=1,#(ItemRack.Menu) do
 			border = _G["ItemRackMenu"..i.."Border"]
 			border:Hide()
-			if ItemRack.menuOpen==20 then
+			if ItemRack.menuOpen==19 then
 				_G["ItemRackMenu"..i.."Name"]:SetText(ItemRack.Menu[i])
 				local missing = ItemRack.MissingItems(ItemRack.Menu[i])
 				if missing==0 then
@@ -1290,7 +1289,7 @@ function ItemRack.UpdateMenuCooldowns()
 	local baseID
 	for i=1,#(ItemRack.Menu) do
 		baseID = tonumber(ItemRack.GetIRString(ItemRack.Menu[i],true)) --get baseID and convert it to number to be able to use it in numerical comparisons below
-		if baseID and baseID>0 and ItemRack.menuOpen<20 then
+		if baseID and baseID>0 and ItemRack.menuOpen<19 then
 			CooldownFrame_Set(_G["ItemRackMenu"..i.."Cooldown"],GetItemCooldown(baseID))
 		else
 			_G["ItemRackMenu"..i.."Cooldown"]:Hide()
@@ -1404,7 +1403,7 @@ function ItemRack.MenuOnClick(self,button)
 			ItemRackOpt.UpdateInv()
 			ItemRackMenuFrame:Hide()
 		end
-	elseif ItemRack.menuOpen<20 then
+	elseif ItemRack.menuOpen<19 then
 		if ItemRack.BankOpen then
 			if ItemRack.GetCountByID(item)==0 then
 				local bankBag,bankSlot = ItemRack.FindInBank(item)
@@ -1441,7 +1440,7 @@ function ItemRack.MenuOnClick(self,button)
 			ItemRack.EquipItemByID(item,ItemRack.menuOpen)
 			ItemRackMenuFrame:Hide()
 		end
-	elseif ItemRack.menuOpen==20 then
+	elseif ItemRack.menuOpen==19 then
 		if ItemRack.BankOpen then
 			if ItemRack.MissingItems(item)==1 then
 				ItemRack.GetBankedSet(item)
@@ -1526,7 +1525,7 @@ function ItemRack.newUseAction(slot,cursor,self)
 	if IsEquippedAction(slot) then
 		local actionType,actionId = GetActionInfo(slot)
 		if actionType=="item" then
-			for i=0,19 do
+			for i=0,18 do
 				if tonumber(ItemRack.GetIRString(GetInventoryItemLink("player",i),true,true))==actionId then --compare baseID of given item (converted to number) to actionId
 					ItemRack.ReflectItemUse(i)
 					break
@@ -1537,7 +1536,7 @@ function ItemRack.newUseAction(slot,cursor,self)
 end
 
 function ItemRack.newUseItemByName(name)
-	for i=0,19 do
+	for i=0,18 do
 		if name==GetItemInfo(GetInventoryItemLink("player",i) or 0) then
 			ItemRack.ReflectItemUse(i)
 			break
@@ -1576,12 +1575,12 @@ function ItemRack.UpdateCombatQueue()
 			queue:SetTexture("Interface\\AddOns\\ItemRack\\ItemRackGear")
 			queue:SetAlpha(ItemRackUser.EnableQueues=="ON" and 1 or .5)
 			queue:Show()
-		elseif i~=20 then
+		elseif i~=19 then
 			queue:Hide()
 		end
 	end
 
-	for i=1,19 do
+	for i=1,18 do
 		queue = _G["Character"..ItemRack.SlotInfo[i].name.."Queue"]
 		if ItemRack.CombatQueue[i] then
 			queue:SetTexture(select(2,ItemRack.GetInfoByID(ItemRack.CombatQueue[i])))
@@ -1598,7 +1597,7 @@ end
 -- request a tooltip of an inventory slot
 function ItemRack.InventoryTooltip(self)
 	local id = self:GetID()
-	if id==20 then
+	if id==19 then
 		ItemRack.SetTooltip(self,ItemRackUser.CurrentSet)
 	else
 		ItemRack.TooltipOwner = self
@@ -1612,7 +1611,7 @@ end
 -- request a tooltip of a menu item (called when hovering over a button in the popout menu of SET NAMES that comes up when clicking the minimap button or bar addon plugin, this is NOT the "Sets" dropdown INSIDE ItemRack's GUI)
 function ItemRack.MenuTooltip(self)
 	local id = self:GetID()
-	if ItemRack.menuOpen==20 then
+	if ItemRack.menuOpen==19 then
 		ItemRack.SetTooltip(self,ItemRack.Menu[id])
 	else
 		ItemRack.TooltipOwner = self
@@ -1754,7 +1753,7 @@ function ItemRack.SetTooltip(self,setname)
 		ItemRack.AnchorTooltip(self)
 		GameTooltip:AddLine(setname)
 		if ItemRackSettings.TinyTooltips~="ON" then
-			for i=0,19 do
+			for i=0,18 do
 				if set[i] then
 					itemName = ItemRack.GetInfoByID(set[i])
 					if itemName then
@@ -1857,13 +1856,13 @@ end
 function ItemRack.DockMenuToCharacterSheet(self)
 	local name = self:GetName()
 	local slot
-	for i=0,19 do
+	for i=0,18 do
 		if name=="Character"..ItemRack.SlotInfo[i].name then
 			slot = i
 		end
 	end
 	if slot then
-		if slot==0 or (slot>=16 and slot<=18) then
+		if slot==0 or (slot>=16 and slot<=17) then
 			ItemRack.DockWindows("TOPLEFT",self,"BOTTOMLEFT","VERTICAL")
 		else
 			if slot==14 and ItemRackSettings.TrinketMenuMode=="ON" then
@@ -1878,7 +1877,7 @@ end
 --[[ Minimap button ]]
 
 function ItemRack.InitBroker()
-	local texture = ItemRack.GetTextureBySlot(20)
+	local texture = ItemRack.GetTextureBySlot(19)
 	texture = [[Interface\AddOns\ItemRack\ItemRackIcon]]
 	ItemRack.Broker = LDB:NewDataObject("ItemRack", {
 		type = "launcher",
@@ -1917,7 +1916,7 @@ function ItemRack.MinimapOnClick(self,button)
 			else
 				ItemRack.DockWindows("BOTTOMRIGHT",self,"TOPRIGHT","VERTICAL")
 			end
-			ItemRack.BuildMenu(20, nil, 4)
+			ItemRack.BuildMenu(19, nil, 4)
 		end
 	else
 		ItemRack.ToggleOptions(self)
@@ -1979,7 +1978,7 @@ end
 
 function ItemRack.ReflectAlpha()
 	if ItemRackButton0 then
-		for i=0,20 do
+		for i=0,19 do
 			_G["ItemRackButton"..i]:SetAlpha(ItemRackUser.Alpha)
 		end
 	end
@@ -2011,7 +2010,7 @@ end
 
 function ItemRack.ReflectCooldownFont()
 	local item
-	for i=0,20 do
+	for i=0,19 do
 		ItemRack.SetFont("ItemRackButton"..i)
 	end
 	local i=1
