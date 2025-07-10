@@ -456,7 +456,7 @@ local prevIcon, prevText
 function ItemRack.ReflectEventsRunning()
 	if ItemRackUser.EnableEvents=="ON" and next(ItemRackUser.Events.Enabled) then
 		-- if events enabled and an event is enabled, show gear icons on set and minimap button
-		if ItemRackUser.Buttons[20] then
+		if ItemRackUser.Buttons[19] then
 			ItemRackButton20Queue:Show()
 		end
 		prevIcon = ItemRack.Broker.icon
@@ -464,7 +464,7 @@ function ItemRack.ReflectEventsRunning()
 		ItemRack.Broker.icon = [[Interface\AddOns\ItemRack\ItemRackGear]]
 		ItemRack.Broker.text = "..."
 	else
-		if ItemRackUser.Buttons[20] then
+		if ItemRackUser.Buttons[19] then
 			ItemRackButton20Queue:Hide()
 		end
 		if prevIcon then

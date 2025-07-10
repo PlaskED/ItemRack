@@ -272,7 +272,7 @@ function ItemRack.IterateSwapList(setname)
 
 	local treatAs2H = nil
 	local skip, inv, bag, slot
-	for k=0,19+ItemRack.eqBackOfTheBusOffset do
+	for k=0,18+ItemRack.eqBackOfTheBusOffset do
 		local i = k
 		if k >= ItemRack.eqBackOfTheBusOffset then
 			i = k-ItemRack.eqBackOfTheBusOffset

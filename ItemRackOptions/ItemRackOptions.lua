@@ -8,7 +8,7 @@ ItemRackOpt = {
 	selectedIcon = 0,
 	prevFrame = nil, -- previous subframe a frame should return to (ItemRackOptSubFrame1-x)
 	numSubFrames = 8, -- number of subframes
-	slotOrder = {1,2,3,15,5,4,19,9,16,17,18,0,14,13,12,11,8,7,6,10,6,7,8,11,12,13,14,0,18,17,16,9,19,4,5,15,3,2},
+	slotOrder = {1,2,3,15,5,4,9,16,17,18,0,14,13,12,11,8,7,6,10,6,7,8,11,12,13,14,0,18,17,16,9,4,5,15,3,2},
 	currentMarquee = 1,
 }
 
@@ -41,7 +41,7 @@ function ItemRackOpt.InvOnEnter(self)
 		return
 	end
 	local menuDock,mainDock,menuOrient = "TOPRIGHT","TOPLEFT","HORIZONTAL"
-	if id==0 or (id>=16 and id<=18) then
+	if id==0 or (id>=16 and id<=17) then
 		menuDock,mainDock,menuOrient = "TOPLEFT","BOTTOMLEFT","VERTICAL"
 	elseif id>=6 and id<=14 and id~=9 then
 		menuDock,mainDock = "TOPLEFT","TOPRIGHT"
@@ -70,7 +70,7 @@ function ItemRackOpt.OnLoad(self)
 		insets = {left = 4, right = 4, top = 4, bottom = 4},
 	})
 	ItemRackOptInv0:SetScale(.8)
-	for i=0,19 do
+	for i=0,18 do
 		ItemRackOpt.Inv[i] = {}
 		ItemRackOpt.HoldInv[i] = {}
 	end
@@ -179,18 +179,18 @@ function ItemRackOpt.InitializeSliders()
 end
 
 function ItemRackOpt.OnShow(setname)
-	for i=0,19 do
+	for i=0,18 do
 		ItemRackOpt.Inv[i].id = ItemRack.GetID(i)
 	end
 	if ItemRackUser.CurrentSet and ItemRackUser.Sets[ItemRackUser.CurrentSet] then
 		ItemRackOptSetsName:SetText(ItemRackUser.CurrentSet)
 		ItemRackOpt.selectedIcon = ItemRackUser.Sets[ItemRackUser.CurrentSet].icon
-		for i=0,19 do
+		for i=0,18 do
 			ItemRackOpt.Inv[i].selected = ItemRackUser.Sets[ItemRackUser.CurrentSet].equip[i] and 1 or nil
 		end
 	else
 		ItemRackOptSetsName:SetText("")
-		ItemRackOpt.selectedIcon = ItemRackOpt.Icons[math.random(#(ItemRackOpt.Icons)-20)+20]
+		ItemRackOpt.selectedIcon = ItemRackOpt.Icons[math.random(#(ItemRackOpt.Icons)-19)+19]
 	end
 	ItemRackOpt.UpdateInv()
 	ItemRackOptSubFrame5:Hide()
@@ -201,7 +201,7 @@ function ItemRackOpt.ChangeEditingSet()
 	local setname = ItemRackUser.CurrentSet
 	if setname and ItemRackUser.Sets[setname] then
 		local set = ItemRackUser.Sets[setname].equip
-		for i=0,19 do
+		for i=0,18 do
 			if set[i] then
 				ItemRackOpt.Inv[i].id = set[i]
 				ItemRackOpt.Inv[i].selected = 1
@@ -220,7 +220,7 @@ end
 function ItemRackOpt.UpdateInv()
 	if ItemRack.IsTimerActive("SlotMarquee") then return end
 	local icon,texture,border,item
-	for i=0,19 do
+	for i=0,18 do
 		icon = _G["ItemRackOptInv"..i.."Icon"]
 		border = _G["ItemRackOptInv"..i.."Border"]
 		border:Hide()
@@ -278,7 +278,7 @@ function ItemRackOpt.ButtonOnClick(self)
 
 	if button=="ItemRackOptToggleInvAll" then
 		local state = not ItemRackOpt.Inv[1].selected
-		for i=0,19 do
+		for i=0,18 do
 			ItemRackOpt.Inv[i].selected = state
 		end
 		ItemRackOpt.UpdateInv()
@@ -343,7 +343,7 @@ end
 
 function ItemRackOpt.PopulateInvIcons()
 	local texture
-	for i=0,19 do
+	for i=0,18 do
 		if ItemRackOpt.Inv[i].id and ItemRackOpt.Inv[i].id~=0 then
 			_,texture = ItemRack.GetInfoByID(ItemRackOpt.Inv[i].id)
 		else
@@ -356,7 +356,7 @@ end
 
 function ItemRackOpt.PopulateInitialIcons()
 	ItemRackOpt.Icons = {}
-	for i=0,19 do
+	for i=0,18 do
 		table.insert(ItemRackOpt.Icons,"Interface\\Icons\\INV_Misc_QuestionMark")
 	end
 	ItemRackOpt.PopulateInvIcons()
@@ -427,7 +427,7 @@ function ItemRackOpt.SaveSet()
 	set.oldset = nil
 	set.old = {}
 	set.equip = {}
-	for i=0,19 do
+	for i=0,18 do
 		if ItemRackOpt.Inv[i].selected then
 			set.equip[i] = ItemRackOpt.Inv[i].id
 		end
@@ -454,7 +454,7 @@ function ItemRackOpt.ValidateSetButtons()
 
 	local setname = ItemRackOptSetsName:GetText()
 	if string.len(setname)>0 and not ItemRack.SetnameBlacklist[setname] then
-		for i=0,19 do
+		for i=0,18 do
 			if ItemRackOpt.Inv[i].selected then
 				ItemRackOptSetsSaveButton:Enable()
 				break
@@ -512,7 +512,7 @@ function ItemRackOpt.LoadSet()
 	local setname = ItemRackOptSetsName:GetText()
 	if ItemRackUser.Sets[setname] then
 		local set = ItemRackUser.Sets[setname].equip
-		for i=0,19 do
+		for i=0,18 do
 			ItemRackOpt.Inv[i].selected = nil
 			if set[i] then
 				ItemRackOpt.Inv[i].id = set[i]
@@ -560,14 +560,14 @@ function ItemRackOpt.MakeEscable(frame,add)
 end
 
 function ItemRackOpt.SaveInv()
-	for i=0,19 do
+	for i=0,18 do
 		ItemRackOpt.HoldInv[i].id = ItemRackOpt.Inv[i].id
 		ItemRackOpt.HoldInv[i].selected = ItemRackOpt.Inv[i].selected
 	end
 end
 
 function ItemRackOpt.RestoreInv()
-	for i=0,19 do
+	for i=0,18 do
 		ItemRackOpt.Inv[i].id = ItemRackOpt.HoldInv[i].id
 		ItemRackOpt.Inv[i].selected = ItemRackOpt.HoldInv[i].selected
 	end
@@ -607,7 +607,7 @@ end
 function ItemRackOpt.SetListOnEnter(self)
 	_G[self:GetName().."Highlight"]:Show()
 	local set = ItemRackUser.Sets[ItemRackOpt.SetList[self:GetID()+FauxScrollFrame_GetOffset(ItemRackOptSetListScrollFrame)]].equip
-	for i=0,19 do
+	for i=0,18 do
 		if set[i] then
 			ItemRackOpt.Inv[i].id = set[i]
 			ItemRackOpt.Inv[i].selected = 1
@@ -662,7 +662,7 @@ end
 -- when a set is chosen in the set list
 function ItemRackOpt.SelectSetList(self)
 	local setname = ItemRackOpt.SetList[self:GetID()+FauxScrollFrame_GetOffset(ItemRackOptSetListScrollFrame)]
-	for i=0,19 do
+	for i=0,18 do
 		ItemRackOpt.HoldInv[i].id = ItemRackOpt.Inv[i].id
 		ItemRackOpt.HoldInv[i].selected = ItemRackOpt.Inv[i].selected
 	end
@@ -1089,7 +1089,7 @@ end
 
 function ItemRackOpt.StartMarquee()
 	ItemRackOpt.SaveInv()
-	for i=0,19 do
+	for i=0,18 do
 		ItemRackOpt.Inv[i].selected = nil
 	end
 	ItemRackOptToggleInvAll:Hide()
@@ -1130,7 +1130,7 @@ function ItemRackOpt.SlotQueueFrameOnShow()
 	ItemRackOpt.MakeEscable("ItemRackOptSubFrame7","add")
 	ItemRackOpt.MakeEscable("ItemRackOptFrame","remove")
 	ItemRackOpt.HideCurrentSubFrame(7)
-	for i=0,19 do
+	for i=0,18 do
 		_G["ItemRackOptInv"..i]:Hide()
 	end
 	ItemRackOptToggleInvAll:Hide()
@@ -1140,7 +1140,7 @@ function ItemRackOpt.SlotQueueFrameOnHide()
 	ItemRackOpt.MakeEscable("ItemRackOptSubFrame7","remove")
 	ItemRackOpt.MakeEscable("ItemRackOptFrame","add")
 	ItemRackOpt.ShowPrevSubFrame()
-	for i=0,19 do
+	for i=0,18 do
 		_G["ItemRackOptInv"..i]:Show()
 	end
 	ItemRackOptToggleInvAll:Show()
